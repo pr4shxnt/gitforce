@@ -3,7 +3,7 @@ import Navbar from "./Components/Root/Navbar";
 const stats = [
   { label: "Hackathons led", value: "3" },
   { label: "Wins secured", value: "2" },
-  { label: "Avg. sprint", value: "72h" },
+  { label: "Avg. sprint", value: "28h" },
 ];
 
 const sprintPillars = [
