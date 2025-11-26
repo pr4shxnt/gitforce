@@ -1,4 +1,5 @@
 import Navbar from "../Components/Root/Navbar";
+import ResNavbar from "../Components/Root/ResNavbar";
 
 const commitments = [
   {
@@ -25,6 +26,7 @@ export default function About() {
   return (
     <>
       <Navbar />
+      <ResNavbar/>
       <main className="px-6 md:px-10 lg:px-16 py-12 space-y-16">
         <section className="max-w-6xl mx-auto space-y-6">
           <p className="text-xs uppercase tracking-[0.4em]" style={{ color: "var(--accent)" }}>

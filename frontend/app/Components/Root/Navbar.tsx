@@ -10,7 +10,7 @@ const Navbar = () => {
   return (
     <>
     <nav
-        className='flex mx-auto mt-6 w-11/12 max-w-6xl rounded-3xl justify-between items-center px-8 py-4 backdrop-blur-md gap-6 surface-card'
+        className='md:flex hidden mx-auto mt-6 w-11/12 max-w-6xl rounded-3xl justify-between items-center px-8 py-4 backdrop-blur-md gap-6 surface-card'
     >
         <div className="w-full">
             <h2 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>

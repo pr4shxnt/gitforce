@@ -1,4 +1,5 @@
 import Navbar from "../Components/Root/Navbar";
+import ResNavbar from "../Components/Root/ResNavbar";
 
 const projects = [
   {
@@ -31,6 +32,7 @@ export default function Projects() {
   return (
     <>
       <Navbar />
+      <ResNavbar/>
       <main className="px-6 md:px-10 lg:px-16 py-12 space-y-16">
         <section className="max-w-6xl mx-auto space-y-4">
           <p className="text-xs uppercase tracking-[0.4em]" style={{ color: "var(--accent)" }}>

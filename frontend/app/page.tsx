@@ -1,4 +1,5 @@
 import Navbar from "./Components/Root/Navbar";
+import ResNavbar from "./Components/Root/ResNavbar";
 
 const stats = [
   { label: "Hackathons led", value: "3" },
@@ -69,6 +70,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
+      <ResNavbar/>
       <main className="px-6 md:px-10 lg:px-16 py-12 md:py-16 space-y-20">
         <section className="max-w-6xl mx-auto grid gap-12 lg:grid-cols-[3fr,2fr] items-center">
           <div className="space-y-7">
@@ -243,11 +245,11 @@ export default function Home() {
             >
               tracks
             </p>
-            <div className="flex w-full gap-4">
+            <div className="md:flex flex flex-col w-full gap-4">
               {partnerTracks.map(({ title, copy }) => (
                 <div
                   key={title}
-                  className="h-40 w-full rounded-2xl surface-card p-5 cursor-pointer [perspective:1000px] group"
+                  className="h-40 w-full rounded-2xl surface-card p-5 cursor-pointer perspective-[1000px] group"
                 >
                   <div className="relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                     {/* Front */}
