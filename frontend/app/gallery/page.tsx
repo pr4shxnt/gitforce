@@ -2,20 +2,15 @@ import Navbar from "../Components/Root/Navbar";
 
 const milestones = [
   {
-    title: "IoT water safety network",
-    detail: "Prototype deployed across three municipalities to spot contamination spikes in community taps.",
-    note: "Solved a decade-long monitoring issue using low-cost sensors and cloud pipelines.",
+    title: "Ecobin: a waste management tool",
+    detail: "Designed and developed in hackathons of MIT x Thrive 2025 and Code For Change Techspire.",
+    note: "mongodb, reactjs, express",
   },
   {
-    title: "Sunway campus ops dashboard",
-    detail: "Unified maintenance tickets, lab schedules, and student feedback in one responsive interface.",
-    note: "Ran across tablets, desktop kiosks, and mobile apps with offline sync.",
-  },
-  {
-    title: "AI-ready crisis assistant",
-    detail: "Voice + text helper that routes emergency data to verified responders in Nepali and English.",
-    note: "Evaluated on locally collected datasets to ensure cultural fit.",
-  },
+    title: "Transitpay: Revolutionize Your Digital Commute",
+    detail: "Unified transit tickets, fares, and nfc based user wallet to work offline for public transport.",
+    note: "IoT, react-native, nextjs, express",
+  }
 ];
 
 const galleryNotes = [
@@ -29,7 +24,7 @@ export default function Gallery() {
     <>
       <Navbar />
       <main className="px-6 md:px-10 lg:px-16 py-12 space-y-16">
-        <section className="max-w-5xl mx-auto space-y-4">
+        <section className="max-w-6xl mx-auto space-y-4">
           <p className="text-xs uppercase tracking-[0.4em]" style={{ color: "var(--accent)" }}>
             Gallery
           </p>
@@ -56,7 +51,7 @@ export default function Gallery() {
           ))}
         </section>
 
-        <section className="max-w-5xl mx-auto space-y-3 surface-card rounded-3xl p-6">
+        <section className="max-w-6xl mx-auto space-y-3 surface-card rounded-3xl p-6">
           <h2 className="text-2xl font-semibold" style={{ color: "var(--foreground)" }}>
             What the photos cannot show
           </h2>

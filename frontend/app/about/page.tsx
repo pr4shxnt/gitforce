@@ -26,7 +26,7 @@ export default function About() {
     <>
       <Navbar />
       <main className="px-6 md:px-10 lg:px-16 py-12 space-y-16">
-        <section className="max-w-5xl mx-auto space-y-6">
+        <section className="max-w-6xl mx-auto space-y-6">
           <p className="text-xs uppercase tracking-[0.4em]" style={{ color: "var(--accent)" }}>
             About GitForce
           </p>
@@ -52,7 +52,7 @@ export default function About() {
           ))}
         </section>
 
-        <section className="max-w-5xl mx-auto space-y-5">
+        <section className="max-w-6xl mx-auto space-y-5">
           <h2 className="text-2xl font-semibold" style={{ color: "var(--foreground)" }}>
             Hackathon performance
           </h2>
@@ -63,7 +63,7 @@ export default function About() {
           </div>
         </section>
 
-        <section className="max-w-5xl mx-auto space-y-4">
+        <section className="max-w-6xl mx-auto space-y-4">
           <h2 className="text-2xl font-semibold" style={{ color: "var(--foreground)" }}>
             Long-term vision
           </h2>

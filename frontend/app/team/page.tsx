@@ -5,12 +5,12 @@ const members = [
     name: "Prashant Adhikari",
     role: "Lead Engineer · Product",
     bio: "Systems thinker focused on IoT networks, cloud automation, and translating community needs into reliable software.",
-    focus: "Owns architecture decisions, leads Sunway student outreach, and mentors incoming members.",
+    focus: "Owns architecture decisions, leads incoming members outreach, and mentors incoming members.",
   },
   {
     name: "Rojin Baniya",
-    role: "Full-stack Engineer · Experience",
-    bio: "Builds user-facing web and mobile surfaces, stitches telemetry, and runs end-user tests during hackathons.",
+    role: "AI/ML Engineer · Computer Vision",
+    bio: "Builds and trains integrated AI/ML models within a framework that is scalable and reliable.",
     focus: "Keeps GitForce demos crisp, handles design systems, and manages device testing labs.",
   },
 ];
@@ -26,7 +26,7 @@ export default function Team() {
     <>
       <Navbar />
       <main className="px-6 md:px-10 lg:px-16 py-12 space-y-16">
-        <section className="max-w-5xl mx-auto space-y-4">
+        <section className="max-w-6xl mx-auto space-y-4">
           <p className="text-xs uppercase tracking-[0.4em]" style={{ color: "var(--accent)" }}>
             Team
           </p>

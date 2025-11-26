@@ -32,7 +32,7 @@ export default function Projects() {
     <>
       <Navbar />
       <main className="px-6 md:px-10 lg:px-16 py-12 space-y-16">
-        <section className="max-w-5xl mx-auto space-y-4">
+        <section className="max-w-6xl mx-auto space-y-4">
           <p className="text-xs uppercase tracking-[0.4em]" style={{ color: "var(--accent)" }}>
             Projects
           </p>
@@ -59,7 +59,7 @@ export default function Projects() {
           ))}
         </section>
 
-        <section className="max-w-5xl mx-auto surface-card rounded-3xl p-6 space-y-4">
+        <section className="max-w-6xl mx-auto surface-card rounded-3xl p-6 space-y-4">
           <h2 className="text-2xl font-semibold" style={{ color: "var(--foreground)" }}>
             Delivery guarantees
           </h2>
