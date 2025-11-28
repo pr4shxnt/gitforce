@@ -245,7 +245,7 @@ export default function Home() {
             >
               tracks
             </p>
-            <div className="md:flex flex flex-col w-full gap-4">
+            <div className="md:flex-row flex flex-col w-full gap-4">
               {partnerTracks.map(({ title, copy }) => (
                 <div
                   key={title}
