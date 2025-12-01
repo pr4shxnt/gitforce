@@ -9,7 +9,7 @@ const projects = [
       "Low-cost nfc based sensors authentication to the cloud, while mobile dashboards alert users when travel ends. Addresses a decade-old gap in public transport monitoring.",
   },
   {
-    title: "Ecobin - smart waste management",
+    title: "Ecobin",
     stack: "Express · React · Cloud",
     summary:
       "Discontinued as no feasibility. Software based services for waste management. Waste segregation, User panel, QR based user canning, Waste truck schedules.",
