@@ -3,23 +3,17 @@ import ResNavbar from "../Components/Root/ResNavbar";
 
 const projects = [
   {
-    title: "Nepal Water Grid",
-    stack: "IoT · Edge compute · Supabase · Next.js",
+    title: "TransitPay",
+    stack: "IoT · Express · React-Native · Next.js",
     summary:
-      "Low-cost sensors feed water quality data to the cloud, while mobile dashboards alert municipalities when contamination spikes. Addresses a decade-old gap in public health monitoring.",
+      "Low-cost nfc based sensors authentication to the cloud, while mobile dashboards alert users when travel ends. Addresses a decade-old gap in public transport monitoring.",
   },
   {
-    title: "Supply Guard",
+    title: "Ecobin - smart waste management",
     stack: "Full-stack web · Mobile · Cloud functions",
     summary:
-      "Tracks essential goods across hilly regions, predicts shortages, and alerts cooperatives. Built during a hackathon, now piloted with partners that demanded strict data isolation.",
-  },
-  {
-    title: "Crisis Assist AI",
-    stack: "LLM orchestration · Voice interface · Observability",
-    summary:
-      "Conversational assistant that triages incidents in Nepali/English, routes to the right response team, and logs every action for audit trails. Deployed with privacy-first architecture.",
-  },
+      "Discontinued as no feasibility. Software based services for waste management. Waste segregation, User panel, QR based user canning, Waste truck schedules and Waste truck notification.",
+  }
 ];
 
 const guarantees = [
