@@ -10,9 +10,9 @@ const projects = [
   },
   {
     title: "Ecobin - smart waste management",
-    stack: "Full-stack web · Mobile · Cloud functions",
+    stack: "Express · React · Cloud",
     summary:
-      "Discontinued as no feasibility. Software based services for waste management. Waste segregation, User panel, QR based user canning, Waste truck schedules and Waste truck notification.",
+      "Discontinued as no feasibility. Software based services for waste management. Waste segregation, User panel, QR based user canning, Waste truck schedules.",
   }
 ];
 
