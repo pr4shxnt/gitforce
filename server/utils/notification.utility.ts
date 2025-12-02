@@ -7,16 +7,20 @@ interface EmailOptions {
 }
 
 export async function sendMail({ purpose, email, data }: EmailOptions) {
-  // Configure transporter
+  
+  const emailUser = process.env.EMAIL_USER || process.env.MAIL_USER;
+  const emailPass = process.env.EMAIL_PASS || process.env.MAIL_PASS;
+  
+  // Configure transporter for Gmail
   const transporter = nodemailer.createTransport({
-    host: process.env.MAIL_HOST,
-    port: Number(process.env.MAIL_PORT),
-    secure: false,
+    service: 'gmail',
     auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS,
+      user: emailUser,
+      pass: emailPass,
     },
   });
+
+  console.log('Transporter created');
 
   // Message templates based on purpose
   const templates: Record<string, { subject: string; html: string }> = {
@@ -41,13 +45,18 @@ export async function sendMail({ purpose, email, data }: EmailOptions) {
   };
 
   const mailOptions = {
-    from: process.env.MAIL_USER,
+    from: emailUser,
     to: email,
     subject: template.subject,
     html: template.html,
   };
 
+
   // Send email
-  const info = await transporter.sendMail(mailOptions);
-  return info;
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    return info;
+  } catch (error) {
+    throw error;
+  }
 }

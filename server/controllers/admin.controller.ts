@@ -1,43 +1,169 @@
-import Admin from "../models/admin.model";
-import bcrypt from 'bcrypt'
+import { Request, Response } from 'express';
+import Admin from '../models/admin.model';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { sendMail } from '../utils/notification.utility';
+import NodeCache from 'node-cache';
 
-exports.createAdmin = async (req: any, res: any) => {
+const otpCache = new NodeCache({ stdTTL: 600 }); // 10 minutes
+
+export const createAdmin = async (req: Request, res: Response) => {
     try {
-        const { name, password, email } = req.body;
-
+        const { name, email, password, role } = req.body;
+        
         // input validation
         if (!name || typeof name !== "string") {
-            return res.status(400).json({ message: "Invalid or missing 'name'." });
+             res.status(400).json({ message: "Invalid or missing 'name'." });
+             return;
         }
 
         // password validation
         if (!password || typeof password !== "string") {
-            return res.status(400).json({ message: "Invalid or missing 'password'." });
+             res.status(400).json({ message: "Invalid or missing 'password'." });
+             return;
         }
 
         // email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.(com|np|in)$/;
         if (!email || !emailRegex.test(email)) {
-            return res.status(400).json({ message: "Invalid or missing 'email'." });
+             res.status(400).json({ message: "Invalid or missing 'email'." });
+             return;
         }
 
-        // password hashing
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const existingAdmin = await Admin.findOne({ email });
+        if (existingAdmin) {
+            res.status(400).json({ message: 'Admin already exists' });
+            return;
+        }
 
-        // create and save admin (store hashed password)
-        const admin = new Admin({ name, password: hashedPassword, email });
-        await admin.save();
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newAdmin = new Admin({ name, email, password: hashedPassword, role });
+        await newAdmin.save();
 
-        // remove password before sending response
-        const adminObj = admin.toObject ? admin.toObject() : { ...admin };
+        const adminObj = newAdmin.toObject ? newAdmin.toObject() : { ...newAdmin };
         const { password: _password, ...safeAdminObj } = adminObj as any;
 
-        return res.status(201).json(safeAdminObj);
+        res.status(201).json({ message: 'Admin created successfully', admin: safeAdminObj });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ message: 'Error creating admin', error });
     }
 };
 
+export const loginAdmin = async (req: Request, res: Response) => {
+    try {
+        const { email, password } = req.body;
+        const admin = await Admin.findOne({ email });
+        if (!admin) {
+            res.status(404).json({ message: 'Admin not found' });
+            return;
+        }
 
+        const isMatch = await bcrypt.compare(password, admin.password);
+        if (!isMatch) {
+            res.status(400).json({ message: 'Invalid credentials' });
+            return;
+        }
+
+        // Generate OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        // Store in cache
+        otpCache.set(`otp_${email}`, otp);
+
+        await sendMail({
+            purpose: 'otp',
+            email: admin.email,
+            data: { otp }
+        });
+
+        res.status(200).json({ message: 'OTP sent to email' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error logging in', error });
+    }
+};
+
+export const verifyOtp = async (req: Request, res: Response) => {
+    try {
+        const { email, otp } = req.body;
+        
+        const cachedOtp = otpCache.get(`otp_${email}`);
+
+        if (!cachedOtp) {
+            res.status(400).json({ message: 'OTP expired or not requested' });
+            return;
+        }
+
+        if (cachedOtp !== otp) {
+            res.status(400).json({ message: 'Invalid OTP' });
+            return;
+        }
+
+        const admin = await Admin.findOne({ email });
+        if (!admin) {
+            res.status(404).json({ message: 'Admin not found' });
+            return;
+        }
+
+        // Clear OTP from cache
+        otpCache.del(`otp_${email}`);
+
+        const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '1h' });
+        res.status(200).json({ message: 'Login successful', token });
+    } catch (error) {
+        res.status(500).json({ message: 'Error verifying OTP', error });
+    }
+};
+
+export const getAllAdmins = async (req: Request, res: Response) => {
+    try {
+        const admins = await Admin.find().select('-password');
+        res.status(200).json(admins);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching admins', error });
+    }
+};
+
+export const getAdminById = async (req: Request, res: Response) => {
+    try {
+        const admin = await Admin.findById(req.params.id).select('-password');
+        if (!admin) {
+            res.status(404).json({ message: 'Admin not found' });
+            return;
+        }
+        res.status(200).json(admin);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching admin', error });
+    }
+};
+
+export const updateAdmin = async (req: Request, res: Response) => {
+    try {
+        const { name, email, role } = req.body;
+        const admin = await Admin.findByIdAndUpdate(
+            req.params.id,
+            { name, email, role },
+            { new: true }
+        ).select('-password');
+
+        if (!admin) {
+            res.status(404).json({ message: 'Admin not found' });
+            return;
+        }
+        res.status(200).json({ message: 'Admin updated successfully', admin });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating admin', error });
+    }
+};
+
+export const deleteAdmin = async (req: Request, res: Response) => {
+    try {
+        const admin = await Admin.findByIdAndDelete(req.params.id);
+        if (!admin) {
+            res.status(404).json({ message: 'Admin not found' });
+            return;
+        }
+        res.status(200).json({ message: 'Admin deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting admin', error });
+    }
+};

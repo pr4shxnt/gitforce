@@ -2,9 +2,10 @@ import express from "express";
 import cors from "cors";
 import dotenv from 'dotenv'
 import connectToDatabase from "./services/database.service";
+import adminRoutes from "./routes/admin.routes";
 
 const app = express();
-const PORT = 3000;
+const PORT = 5000;
 
 // Middleware
 dotenv.config();
@@ -16,7 +17,9 @@ app.use(express.json());
 connectToDatabase();
 
 
+
 // Routes
+app.use("/api/admin", adminRoutes);
 app.get("/", (req, res) => {
   res.send("Hello Git Force with ESM + TS!");
 });
