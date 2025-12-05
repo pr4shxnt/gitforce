@@ -4,6 +4,7 @@ import axios from "axios";
 interface AdminAuthState {
     isAuthenticated: boolean;
     user: any | null;
+    token: string | null;
     isLoading: boolean;
     error: string | null;
     otpSent: boolean;
@@ -13,6 +14,7 @@ interface AdminAuthState {
 const initialState: AdminAuthState = {
     isAuthenticated: false,
     user: null,
+    token: null,
     isLoading: false,
     error: null,
     otpSent: false,
@@ -63,6 +65,23 @@ const adminAuthSlice = createSlice({
             state.otpSent = false;
             state.email = null;
             state.error = null;
+        },
+        logout: (state) => {
+            state.isAuthenticated = false;
+            state.user = null;
+            state.token = null;
+            state.error = null;
+            state.otpSent = false;
+            state.email = null;
+            // Clear localStorage
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('adminAuth');
+            }
+        },
+        setAuthFromStorage: (state, action) => {
+            state.isAuthenticated = true;
+            state.user = action.payload.user;
+            state.token = action.payload.token;
         }
     },
     extraReducers: (builder) => {
@@ -91,9 +110,18 @@ const adminAuthSlice = createSlice({
         builder.addCase(verifyOtp.fulfilled, (state, action) => {
             state.isLoading = false;
             state.isAuthenticated = true;
-            state.user = action.payload;
+            state.user = action.payload.user || action.payload;
+            state.token = action.payload.token || action.payload.accessToken || null;
             state.otpSent = false;
             state.error = null;
+            
+            // Persist to localStorage
+            if (typeof window !== 'undefined' && state.token) {
+                localStorage.setItem('adminAuth', JSON.stringify({
+                    user: state.user,
+                    token: state.token
+                }));
+            }
         });
         builder.addCase(verifyOtp.rejected, (state, action) => {
             state.isLoading = false;
@@ -102,5 +130,5 @@ const adminAuthSlice = createSlice({
     },
 });
 
-export const { clearError, resetOtpState } = adminAuthSlice.actions;
+export const { clearError, resetOtpState, logout, setAuthFromStorage } = adminAuthSlice.actions;
 export default adminAuthSlice.reducer;

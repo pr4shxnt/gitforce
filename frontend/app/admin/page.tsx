@@ -1,10 +1,12 @@
 'use client'
 
-import { FormEvent, useState, useRef, KeyboardEvent } from "react";
+import { FormEvent, useState, useRef, KeyboardEvent, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { login, verifyOtp, resetOtpState } from "@/lib/AdminAuthSlice";
 
 export default function AdminHome() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { isAuthenticated, user, isLoading, error: authError, otpSent, email: storedEmail } = useAppSelector((state) => state.adminAuth);
   const [email, setEmail] = useState("");
@@ -12,6 +14,13 @@ export default function AdminHome() {
   const [showPassword, setShowPassword] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const otpInputs = useRef<(HTMLInputElement | null)[]>([]);
+
+  // Redirect to dashboard if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/admin/dashboard');
+    }
+  }, [isAuthenticated, router]);
 
   const handleLoginSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -53,24 +62,6 @@ export default function AdminHome() {
     dispatch(resetOtpState());
     setOtp(["", "", "", "", "", ""]);
   };
-
-  if (isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-950 via-purple-900 to-pink-900">
-        <div className="text-center">
-          <div className="mb-6">
-            <div className="inline-block p-4 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full animate-bounce">
-              <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-          </div>
-          <h1 className="text-4xl font-bold text-white mb-4">Welcome, Admin! 🎉</h1>
-          <p className="text-purple-200">You are successfully logged in.</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-indigo-950 via-purple-900 to-pink-900">
