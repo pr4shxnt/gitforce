@@ -3,19 +3,19 @@ import cors from "cors";
 import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
-import connectToDatabase from "./services/database.service";
-import adminRoutes from "./routes/admin.routes";
-import messageRoutes from "./routes/message.routes";
-import projectRoutes from "./routes/project.routes";
-import galleryRoutes from "./routes/gallery.routes";
-import teamRoutes from "./routes/team.routes";
-import contentRoutes from "./routes/content.routes";
-import memberRoutes from "./routes/member.routes";
-import dashboardRoutes from "./routes/dashboard.routes";
-import uploadRoutes from "./routes/upload.routes";
-import { initializeSocketIO } from "./services/socket.handler";
-import { initializeCleanupService } from "./services/cleanup.service";
-import './services/cloudinary.service'; // Initialize services
+import connectToDatabase from "./services/database.service.js";
+import adminRoutes from "./routes/admin.routes.js";
+import messageRoutes from "./routes/message.routes.js";
+import projectRoutes from "./routes/project.routes.js";
+import galleryRoutes from "./routes/gallery.routes.js";
+import teamRoutes from "./routes/team.routes.js";
+import contentRoutes from "./routes/content.routes.js";
+import memberRoutes from "./routes/member.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
+import uploadRoutes from "./routes/upload.routes.js";
+import { initializeSocketIO } from "./services/socket.handler.js";
+import { initializeCleanupService } from "./services/cleanup.service.js";
+import './services/cloudinary.service.js'; // Initialize services
 
 const app = express();
 const PORT = process.env.PORT || 5000;
