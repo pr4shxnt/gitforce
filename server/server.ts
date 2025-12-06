@@ -1,27 +1,54 @@
 import express from "express";
 import cors from "cors";
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
+import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 import connectToDatabase from "./services/database.service";
 import adminRoutes from "./routes/admin.routes";
+import messageRoutes from "./routes/message.routes";
+import projectRoutes from "./routes/project.routes";
+import galleryRoutes from "./routes/gallery.routes";
+import teamRoutes from "./routes/team.routes";
+import contentRoutes from "./routes/content.routes";
+import memberRoutes from "./routes/member.routes";
+import dashboardRoutes from "./routes/dashboard.routes";
+import { initializeSocketIO } from "./services/socket.handler";
+import './services/cloudinary.service'; // Initialize Cloudinary
 
 const app = express();
 const PORT = 5000;
+const httpServer = createServer(app);
+
+// Initialize Socket.IO with CORS
+const io = new SocketIOServer(httpServer, {
+  cors: {
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
 
 // Middleware
 dotenv.config();
 app.use(cors());
 app.use(express.json());
 
-
-//Services
+// Services
 connectToDatabase();
-
-
+initializeSocketIO(io);
 
 // Routes
 app.use("/api/admin", adminRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/gallery", galleryRoutes);
+app.use("/api/team", teamRoutes);
+app.use("/api/content", contentRoutes);
+app.use("/api/members", memberRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+
 app.get("/", (req, res) => {
-  res.send("Hello Git Force with ESM + TS!");
+  res.send("Hello Git Force");
 });
 
 // Example API
@@ -29,7 +56,8 @@ app.get("/api/status", (req, res) => {
   res.json({ status: "ok", message: "Server running successfully" });
 });
 
-// Start server
-app.listen(PORT, () => {
+// Start server with Socket.IO
+httpServer.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`WebSocket server ready`);
 });

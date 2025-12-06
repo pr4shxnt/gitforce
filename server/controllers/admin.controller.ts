@@ -107,8 +107,12 @@ export const verifyOtp = async (req: Request, res: Response) => {
         // Clear OTP from cache
         otpCache.del(`otp_${email}`);
 
-        const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '1h' });
-        res.status(200).json({ message: 'Login successful', token });
+        const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '10d' });
+        
+        res.status(200).json({ 
+            message: 'Login successful', 
+            token
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error verifying OTP', error });
     }
