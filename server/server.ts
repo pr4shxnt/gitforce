@@ -61,9 +61,11 @@ app.get("/api/status", (req, res) => {
 });
 
 // Start server with Socket.IO only if not in Vercel environment (Vercel handles the server)
-if (process.env.NODE_ENV !== 'production') {
-  httpServer.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+// We check for VERCEL env var so this works on Render/Railway/VPS in production
+if (process.env.VERCEL !== '1') {
+  const port = Number(PORT) || 5000;
+  httpServer.listen(port, '0.0.0.0', () => {
+    console.log(`Server running on port ${port}`);
     console.log(`WebSocket server ready`);
   });
 }
