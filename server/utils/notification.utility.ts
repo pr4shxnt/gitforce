@@ -11,9 +11,11 @@ export async function sendMail({ purpose, email, data }: EmailOptions) {
   const emailUser = process.env.EMAIL_USER || process.env.MAIL_USER;
   const emailPass = process.env.EMAIL_PASS || process.env.MAIL_PASS;
   
-  // Configure transporter for Gmail
+  // Configure transporter for Gmail with explicit settings
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // use SSL
     auth: {
       user: emailUser,
       pass: emailPass,
