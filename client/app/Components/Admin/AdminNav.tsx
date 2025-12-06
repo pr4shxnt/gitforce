@@ -37,7 +37,7 @@ export default function AdminNav() {
         ))}
       </div>
       <button
-        onClick={() => dispatch(logout())}
+        onClick={handleLogout}
         className="text-xs uppercase tracking-[0.4em]"
         style={{ color: "var(--accent)" }}
       >

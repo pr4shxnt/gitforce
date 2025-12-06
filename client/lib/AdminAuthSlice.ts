@@ -91,11 +91,11 @@ const adminAuthSlice = createSlice({
             state.user = null;
             state.token = null;
             state.error = null;
-            state.otpSent = false;
-            state.email = null;
-            // Clear localStorage
+            // state.otpSent = false; // Removed as per instruction
+            // state.email = null; // Removed as per instruction
             if (typeof window !== 'undefined') {
-                localStorage.removeItem('admin_session');
+                localStorage.removeItem('adminToken'); // Changed from 'admin_session'
+                window.location.href = '/portal'; // Added
             }
         },
         setAuthFromStorage: (state, action) => {

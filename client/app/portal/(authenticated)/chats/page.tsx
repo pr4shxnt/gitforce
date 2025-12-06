@@ -23,9 +23,9 @@ export default function ChatsOverviewPage() {
             };
 
             const routes = {
-              'calendar': '/admin/chats/calendar',
-              'general-meeting': '/admin/chats/general-meeting',
-              'broadcast-service': '/admin/chats/broadcast-service',
+              'calendar': '/portal/chats/calendar',
+              'general-meeting': '/portal/chats/general-meeting',
+              'broadcast-service': '/portal/chats/broadcast-service',
             };
 
             return (

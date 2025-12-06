@@ -33,7 +33,7 @@ export default function AdminHome() {
             if (token) {
               // Fetch user data and redirect
               await dispatch(fetchUserData(token));
-              router.push('/admin/dashboard');
+              router.push('/portal/dashboard');
             }
           } catch (error) {
             console.error('Failed to restore auth:', error);
