@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { logout } from "@/lib/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { logout } from "@/lib/AdminAuthSlice";
+import { useRouter } from "next/navigation";
 
 const links = [
   { href: "/admin/dashboard", label: "Dashboard" },
@@ -20,6 +21,12 @@ const links = [
 export default function AdminNav() {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
+  const router = useRouter();
+
+  const handleLogout = () => {
+      dispatch(logout());
+      router.push('/portal');
+  };
 
   return (
     <div className="surface-card rounded-3xl p-5 flex flex-wrap items-center justify-between gap-4">
