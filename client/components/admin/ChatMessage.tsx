@@ -59,9 +59,19 @@ export default function ChatMessage({ message, isOwnMessage }: ChatMessageProps)
                     {message.attachments && message.attachments.length > 0 && (
                         <div className="mt-2 space-y-1">
                             {message.attachments.map((attachment, index) => (
-                                <div key={index} className="text-xs opacity-80">
-                                    📎 {attachment.filename}
-                                </div>
+                                <a 
+                                    key={index} 
+                                    href={attachment.url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 text-xs opacity-80 hover:opacity-100 hover:underline transition-all"
+                                >
+                                    <span>📎</span>
+                                    <span>{attachment.filename || 'Attachment'}</span>
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                </a>
                             ))}
                         </div>
                     )}

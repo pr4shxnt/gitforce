@@ -3,10 +3,48 @@ import Member from '../models/member.model';
 import bcrypt from 'bcrypt';
 import { AuthRequest } from '../middlewares/auth.middleware';
 
+import Admin from '../models/admin.model';
+
 export const getAllMembers = async (req: AuthRequest, res: Response) => {
     try {
-        const members = await Member.find({ isActive: true }).select('-password');
-        res.status(200).json(members);
+        // Fetch all active members and all admins
+        const [members, admins] = await Promise.all([
+            Member.find({ isActive: true }).select('-password').lean(),
+            Admin.find().select('-password').lean()
+        ]);
+
+        const combinedUsers: any[] = [];
+
+        // Add admins
+        admins.forEach((admin: any) => {
+            combinedUsers.push({
+                ...admin,
+                _id: admin._id,
+                role: admin.role,
+                isAdmin: true,
+                // Ensure profile fields exist even if empty
+                avatar: admin.avatar || '',
+                bio: admin.bio || '',
+                github: admin.github || '',
+                linkedin: admin.linkedin || '',
+                isActive: true,
+                joinedAt: admin.createdAt
+            });
+        });
+
+        // Add members
+        members.forEach((member: any) => {
+            combinedUsers.push({
+                ...member,
+                role: 'member',
+                isAdmin: false
+            });
+        });
+
+        // Sort by joined date (newest first)
+        combinedUsers.sort((a, b) => new Date(b.joinedAt).getTime() - new Date(a.joinedAt).getTime());
+
+        res.status(200).json(combinedUsers);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching members', error });
     }

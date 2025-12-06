@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useAppSelector } from '@/lib/hooks';
 import axios from 'axios';
+import ImageUpload from '@/components/admin/ImageUpload';
+import { uploadImageToCloudinary } from '@/lib/uploadUtils';
 
 interface TeamMember {
     _id: string;
@@ -21,8 +23,10 @@ export default function TeamManagementPage() {
     const { token, user } = useAppSelector((state) => state.adminAuth);
     const [members, setMembers] = useState<TeamMember[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [formData, setFormData] = useState({
         name: '',
         role: '',
@@ -56,17 +60,29 @@ export default function TeamManagementPage() {
         e.preventDefault();
         if (!canModify) return;
 
+        setIsSubmitting(true);
         try {
+            let avatarUrl = formData.avatar;
+
+            if (imageFile) {
+                avatarUrl = await uploadImageToCloudinary(imageFile, token!);
+            }
+
+            const memberData = {
+                ...formData,
+                avatar: avatarUrl
+            };
+
             if (editingMember) {
                 await axios.put(
                     `${process.env.NEXT_PUBLIC_API_URL}/team/${editingMember._id}`,
-                    formData,
+                    memberData,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
             } else {
                 await axios.post(
                     `${process.env.NEXT_PUBLIC_API_URL}/team`,
-                    formData,
+                    memberData,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
             }
@@ -75,6 +91,8 @@ export default function TeamManagementPage() {
         } catch (error: any) {
             console.error('Error saving member:', error);
             alert(error?.response?.data?.message || 'Failed to save team member');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -95,6 +113,7 @@ export default function TeamManagementPage() {
     const handleEdit = (member: TeamMember) => {
         if (!canModify) return;
         setEditingMember(member);
+        setImageFile(null);
         setFormData({
             name: member.name,
             role: member.role,
@@ -111,6 +130,7 @@ export default function TeamManagementPage() {
 
     const resetForm = () => {
         setFormData({ name: '', role: '', bio: '', avatar: '', github: '', linkedin: '', email: '', order: 0, active: true });
+        setImageFile(null);
         setEditingMember(null);
         setShowForm(false);
     };
@@ -142,11 +162,16 @@ export default function TeamManagementPage() {
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
-                            <input type="text" placeholder="Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required className="px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50" />
-                            <input type="text" placeholder="Role/Position" value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })} required className="px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50" />
+                            <input type="text" placeholder="Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required disabled={isSubmitting} className="px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50" />
+                            <input type="text" placeholder="Role/Position" value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })} required disabled={isSubmitting} className="px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50" />
                         </div>
-                        <textarea placeholder="Bio" value={formData.bio} onChange={(e) => setFormData({ ...formData, bio: e.target.value })} rows={3} className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50" />
-                        <input type="url" placeholder="Avatar URL" value={formData.avatar} onChange={(e) => setFormData({ ...formData, avatar: e.target.value })} className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50" />
+                        <textarea placeholder="Bio" value={formData.bio} onChange={(e) => setFormData({ ...formData, bio: e.target.value })} rows={3} disabled={isSubmitting} className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50" />
+                        
+                        <ImageUpload
+                            currentImage={formData.avatar}
+                            onFileSelect={setImageFile}
+                            label="Profile Photo"
+                        />
                         <div className="grid grid-cols-3 gap-4">
                             <input type="url" placeholder="GitHub URL" value={formData.github} onChange={(e) => setFormData({ ...formData, github: e.target.value })} className="px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50" />
                             <input type="url" placeholder="LinkedIn URL" value={formData.linkedin} onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })} className="px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50" />

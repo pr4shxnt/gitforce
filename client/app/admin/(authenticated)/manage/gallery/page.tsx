@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useAppSelector } from '@/lib/hooks';
 import axios from 'axios';
+import ImageUpload from '@/components/admin/ImageUpload';
+import { uploadImageToCloudinary } from '@/lib/uploadUtils';
 
 interface GalleryItem {
     _id: string;
@@ -17,8 +19,10 @@ export default function GalleryManagementPage() {
     const { token } = useAppSelector((state) => state.adminAuth);
     const [items, setItems] = useState<GalleryItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -44,25 +48,45 @@ export default function GalleryManagementPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        if (!formData.imageUrl && !imageFile) {
+            alert('Please select an image');
+            return;
+        }
+
+        setIsSubmitting(true);
         try {
+            let finalImageUrl = formData.imageUrl;
+
+            if (imageFile) {
+                finalImageUrl = await uploadImageToCloudinary(imageFile, token!);
+            }
+
+            const itemData = {
+                ...formData,
+                imageUrl: finalImageUrl
+            };
+
             if (editingItem) {
                 await axios.put(
                     `${process.env.NEXT_PUBLIC_API_URL}/gallery/${editingItem._id}`,
-                    formData,
+                    itemData,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
             } else {
                 await axios.post(
                     `${process.env.NEXT_PUBLIC_API_URL}/gallery`,
-                    formData,
+                    itemData,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
             }
             fetchGallery();
             resetForm();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error saving gallery item:', error);
-            alert('Failed to save gallery item');
+            alert(error?.response?.data?.message || 'Failed to save gallery item');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -81,6 +105,7 @@ export default function GalleryManagementPage() {
 
     const handleEdit = (item: GalleryItem) => {
         setEditingItem(item);
+        setImageFile(null);
         setFormData({
             title: item.title,
             description: item.description || '',
@@ -93,6 +118,7 @@ export default function GalleryManagementPage() {
 
     const resetForm = () => {
         setFormData({ title: '', description: '', imageUrl: '', category: 'general', order: 0 });
+        setImageFile(null);
         setEditingItem(null);
         setShowForm(false);
     };
@@ -124,15 +150,14 @@ export default function GalleryManagementPage() {
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             required
+                            disabled={isSubmitting}
                             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                         />
-                        <input
-                            type="url"
-                            placeholder="Image URL"
-                            value={formData.imageUrl}
-                            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                            required
-                            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                        
+                        <ImageUpload
+                            currentImage={formData.imageUrl}
+                            onFileSelect={setImageFile}
+                            label="Gallery Image"
                         />
                         <textarea
                             placeholder="Description (optional)"

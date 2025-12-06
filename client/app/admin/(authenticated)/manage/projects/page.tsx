@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useAppSelector } from '@/lib/hooks';
 import axios from 'axios';
+import ImageUpload from '@/components/admin/ImageUpload';
+import { uploadImageToCloudinary } from '@/lib/uploadUtils';
 
 interface Project {
     _id: string;
@@ -20,8 +22,10 @@ export default function ProjectsManagementPage() {
     const { token } = useAppSelector((state) => state.adminAuth);
     const [projects, setProjects] = useState<Project[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [editingProject, setEditingProject] = useState<Project | null>(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -50,9 +54,24 @@ export default function ProjectsManagementPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        if (!formData.image && !imageFile) {
+            alert('Please select a project image');
+            return;
+        }
+        
+        setIsSubmitting(true);
         try {
+            let imageUrl = formData.image;
+            
+            // Upload new image if file is selected
+            if (imageFile) {
+                imageUrl = await uploadImageToCloudinary(imageFile, token!);
+            }
+            
             const projectData = {
                 ...formData,
+                image: imageUrl,
                 technologies: formData.technologies.split(',').map(t => t.trim())
             };
 
@@ -72,9 +91,11 @@ export default function ProjectsManagementPage() {
 
             fetchProjects();
             resetForm();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error saving project:', error);
-            alert('Failed to save project');
+            alert(error?.response?.data?.message || 'Failed to save project');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -95,6 +116,7 @@ export default function ProjectsManagementPage() {
 
     const handleEdit = (project: Project) => {
         setEditingProject(project);
+        setImageFile(null);
         setFormData({
             title: project.title,
             description: project.description,
@@ -119,6 +141,7 @@ export default function ProjectsManagementPage() {
             featured: false,
             order: 0
         });
+        setImageFile(null);
         setEditingProject(null);
         setShowForm(false);
     };
@@ -146,24 +169,21 @@ export default function ProjectsManagementPage() {
                         {editingProject ? 'Edit Project' : 'Add New Project'}
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <input
-                                type="text"
-                                placeholder="Project Title"
-                                value={formData.title}
-                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                required
-                                className="px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                            />
-                            <input
-                                type="text"
-                                placeholder="Image URL"
-                                value={formData.image}
-                                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                                required
-                                className="px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                            />
-                        </div>
+                        <input
+                            type="text"
+                            placeholder="Project Title"
+                            value={formData.title}
+                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                            required
+                            disabled={isSubmitting}
+                            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                        />
+                        
+                        <ImageUpload
+                            currentImage={formData.image}
+                            onFileSelect={setImageFile}
+                            label="Project Image"
+                        />
                         <textarea
                             placeholder="Description"
                             value={formData.description}

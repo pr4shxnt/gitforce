@@ -12,11 +12,13 @@ import teamRoutes from "./routes/team.routes";
 import contentRoutes from "./routes/content.routes";
 import memberRoutes from "./routes/member.routes";
 import dashboardRoutes from "./routes/dashboard.routes";
+import uploadRoutes from "./routes/upload.routes";
 import { initializeSocketIO } from "./services/socket.handler";
-import './services/cloudinary.service'; // Initialize Cloudinary
+import { initializeCleanupService } from "./services/cleanup.service";
+import './services/cloudinary.service'; // Initialize services
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 const httpServer = createServer(app);
 
 // Initialize Socket.IO with CORS
@@ -36,6 +38,7 @@ app.use(express.json());
 // Services
 connectToDatabase();
 initializeSocketIO(io);
+initializeCleanupService();
 
 // Routes
 app.use("/api/admin", adminRoutes);
@@ -46,6 +49,7 @@ app.use("/api/team", teamRoutes);
 app.use("/api/content", contentRoutes);
 app.use("/api/members", memberRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/upload", uploadRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello Git Force");
@@ -56,8 +60,12 @@ app.get("/api/status", (req, res) => {
   res.json({ status: "ok", message: "Server running successfully" });
 });
 
-// Start server with Socket.IO
-httpServer.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`WebSocket server ready`);
-});
+// Start server with Socket.IO only if not in Vercel environment (Vercel handles the server)
+if (process.env.NODE_ENV !== 'production') {
+  httpServer.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`WebSocket server ready`);
+  });
+}
+
+export default app;

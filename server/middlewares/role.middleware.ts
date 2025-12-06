@@ -19,9 +19,9 @@ export const adminOrSuperuser = (req: AuthRequest, res: Response, next: NextFunc
     next();
 };
 
-// Check if user can modify (create/update/delete) - Admin or Superuser
+// Check if user can modify (create/update/delete) - Admin, Superuser, or Moderator
 export const canModify = (req: AuthRequest, res: Response, next: NextFunction) => {
-    if (req.user?.role !== 'admin' && req.user?.role !== 'superuser') {
+    if (!['admin', 'superuser', 'moderator'].includes(req.user?.role)) {
         res.status(403).json({ message: 'Access denied. You do not have permission to modify this resource.' });
         return;
     }
