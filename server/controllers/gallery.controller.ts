@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import Gallery from '../models/gallery.model';
-import { AuthRequest } from '../middlewares/auth.middleware';
+import Gallery from '../models/gallery.model.js';
+import { AuthRequest } from '../middlewares/auth.middleware.js';
 
 export const getAllGalleryItems = async (req: AuthRequest, res: Response) => {
     try {

@@ -1,5 +1,5 @@
 import { Response, NextFunction } from 'express';
-import { AuthRequest } from './auth.middleware';
+import { AuthRequest } from './auth.middleware.js';
 
 // Only admin can access
 export const adminOnly = (req: AuthRequest, res: Response, next: NextFunction) => {

@@ -1,7 +1,7 @@
 import express from 'express';
-import { getAllTeamMembers, createTeamMember, updateTeamMember, deleteTeamMember } from '../controllers/team.controller';
-import { authenticate } from '../middlewares/auth.middleware';
-import { canModify } from '../middlewares/role.middleware';
+import { getAllTeamMembers, createTeamMember, updateTeamMember, deleteTeamMember } from '../controllers/team.controller.js';
+import { authenticate } from '../middlewares/auth.middleware.js';
+import { canModify } from '../middlewares/role.middleware.js';
 
 const router = express.Router();
 

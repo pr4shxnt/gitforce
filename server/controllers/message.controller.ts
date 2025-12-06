@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import CalendarMessage from '../models/calendar-message.model';
-import GeneralMeetingMessage from '../models/general-meeting-message.model';
-import BroadcastMessage from '../models/broadcast-message.model';
-import { AuthRequest } from '../middlewares/auth.middleware';
+import CalendarMessage from '../models/calendar-message.model.js';
+import GeneralMeetingMessage from '../models/general-meeting-message.model.js';
+import BroadcastMessage from '../models/broadcast-message.model.js';
+import { AuthRequest } from '../middlewares/auth.middleware.js';
 
 const getModelForChatType = (chatType: string) => {
     switch (chatType) {

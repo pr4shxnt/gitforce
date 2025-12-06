@@ -1,9 +1,9 @@
 import { Response } from 'express';
-import Member from '../models/member.model';
+import Member from '../models/member.model.js';
 import bcrypt from 'bcrypt';
-import { AuthRequest } from '../middlewares/auth.middleware';
+import { AuthRequest } from '../middlewares/auth.middleware.js';
 
-import Admin from '../models/admin.model';
+import Admin from '../models/admin.model.js';
 
 export const getAllMembers = async (req: AuthRequest, res: Response) => {
     try {

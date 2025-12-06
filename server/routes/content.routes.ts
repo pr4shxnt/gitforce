@@ -1,7 +1,7 @@
 import express from 'express';
-import { getContentByPage, getContentBySection, createOrUpdateContent, deleteContent } from '../controllers/content.controller';
-import { authenticate } from '../middlewares/auth.middleware';
-import { canModify } from '../middlewares/role.middleware';
+import { getContentByPage, getContentBySection, createOrUpdateContent, deleteContent } from '../controllers/content.controller.js';
+import { authenticate } from '../middlewares/auth.middleware.js';
+import { canModify } from '../middlewares/role.middleware.js';
 
 const router = express.Router();
 

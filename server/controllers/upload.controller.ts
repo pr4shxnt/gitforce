@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import cloudinary from '../services/cloudinary.service';
-import { AuthRequest } from '../middlewares/auth.middleware';
+import cloudinary from '../services/cloudinary.service.js';
+import { AuthRequest } from '../middlewares/auth.middleware.js';
 
 export const uploadImage = async (req: AuthRequest, res: Response) => {
     try {

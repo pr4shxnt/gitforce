@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import TeamMember from '../models/team-member.model';
-import { AuthRequest } from '../middlewares/auth.middleware';
+import TeamMember from '../models/team-member.model.js';
+import { AuthRequest } from '../middlewares/auth.middleware.js';
 
 export const getAllTeamMembers = async (req: AuthRequest, res: Response) => {
     try {

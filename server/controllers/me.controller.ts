@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import Admin from '../models/admin.model';
-import { AuthRequest } from '../middlewares/auth.middleware';
+import Admin from '../models/admin.model.js';
+import { AuthRequest } from '../middlewares/auth.middleware.js';
 
 export const getMe = async (req: AuthRequest, res: Response) => {
     try {

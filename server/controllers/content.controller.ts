@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import Content from '../models/content.model';
-import { AuthRequest } from '../middlewares/auth.middleware';
+import Content from '../models/content.model.js';
+import { AuthRequest } from '../middlewares/auth.middleware.js';
 
 export const getContentByPage = async (req: AuthRequest, res: Response) => {
     try {

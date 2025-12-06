@@ -1,13 +1,13 @@
 import { Response } from 'express';
-import { AuthRequest } from '../middlewares/auth.middleware';
-import CalendarMessage from '../models/calendar-message.model';
-import GeneralMeetingMessage from '../models/general-meeting-message.model';
-import BroadcastMessage from '../models/broadcast-message.model';
-import Project from '../models/project.model';
-import Gallery from '../models/gallery.model';
-import TeamMember from '../models/team-member.model';
-import Member from '../models/member.model';
-import Admin from '../models/admin.model';
+import { AuthRequest } from '../middlewares/auth.middleware.js';
+import CalendarMessage from '../models/calendar-message.model.js';
+import GeneralMeetingMessage from '../models/general-meeting-message.model.js';
+import BroadcastMessage from '../models/broadcast-message.model.js';
+import Project from '../models/project.model.js';
+import Gallery from '../models/gallery.model.js';
+import TeamMember from '../models/team-member.model.js';
+import Member from '../models/member.model.js';
+import Admin from '../models/admin.model.js';
 
 export const getDashboardStats = async (req: AuthRequest, res: Response) => {
     try {

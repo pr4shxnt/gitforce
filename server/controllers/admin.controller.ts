@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import Admin from '../models/admin.model';
+import Admin from '../models/admin.model.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { sendMail } from '../utils/notification.utility';
+import { sendMail } from '../utils/notification.utility.js';
 import NodeCache from 'node-cache';
 
 const otpCache = new NodeCache({ stdTTL: 600 }); // 10 minutes
@@ -49,7 +49,7 @@ export const createAdmin = async (req: Request, res: Response) => {
     }
 };
 
-import Member from '../models/member.model';
+import Member from '../models/member.model.js';
 
 export const loginAdmin = async (req: Request, res: Response) => {
     try {

@@ -1,8 +1,8 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
-import CalendarMessage from '../models/calendar-message.model';
-import GeneralMeetingMessage from '../models/general-meeting-message.model';
-import BroadcastMessage from '../models/broadcast-message.model';
+import CalendarMessage from '../models/calendar-message.model.js';
+import GeneralMeetingMessage from '../models/general-meeting-message.model.js';
+import BroadcastMessage from '../models/broadcast-message.model.js';
 
 interface AuthenticatedSocket extends Socket {
     userId?: string;
